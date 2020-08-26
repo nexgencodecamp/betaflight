@@ -34,7 +34,7 @@
 
 #define USE_UART
 
-#define USE_UART9
+#define USE_UART1
 #define UART1_RX_PIN            PA10
 #define UART1_TX_PIN            PA9
 
@@ -62,7 +62,7 @@
 // MPU6500 interrupt
 #define USE_EXTI
 #define USE_GYRO_EXTI
-#define GYRO_1_EXTI_PIN         PA8
+#define GYRO_1_EXTI_PIN         PK1
 #define USE_MPU_DATA_READY_SIGNAL
 #define ENSURE_MPU_DATA_READY_IS_LOW
 
@@ -89,7 +89,7 @@
 #define DEFAULT_RX_FEATURE      FEATURE_RX_SERIAL
 #define DEFAULT_FEATURES        FEATURE_TELEMETRY 
 #define SERIALRX_PROVIDER       SERIALRX_SBUS
-#define SERIALRX_UART           SERIAL_PORT_LPUART
+#define SERIALRX_UART           SERIAL_PORT_USART1
 
 #define TARGET_IO_PORTA 0xffff
 #define TARGET_IO_PORTB 0xffff
