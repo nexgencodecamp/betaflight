@@ -2,11 +2,11 @@
 use warnings;
 use strict;
 
-# This sript will generate templated files for peripherals
+# This script will generate templated files for peripherals
 
 # io_def_generated.h
 
-my @ports = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H');
+my @ports = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K');
 my @pins  = 0 .. 15;
 my @timers = (1,2,3,4,6,7,8,15,16,17);
 my $drivers_dir = "../main/drivers";
