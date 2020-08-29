@@ -85,6 +85,9 @@
 
 #define GYRO_CONFIG_USE_GYRO_DEFAULT
 
+#define USE_TIMER
+#define USE_MOTOR
+
 #define USE_ADC
 #define USE_ADC_INTERNAL
 
@@ -96,6 +99,8 @@
 #define DEFAULT_FEATURES        FEATURE_TELEMETRY 
 #define SERIALRX_PROVIDER       SERIALRX_SBUS
 #define SERIALRX_UART           SERIAL_PORT_USART1
+
+#define USE_DMA
 
 #define TARGET_IO_PORTA 0xffff
 #define TARGET_IO_PORTB 0xffff
