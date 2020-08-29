@@ -1023,6 +1023,14 @@
 #define DEF_TIM_AF__PI6__TCH_TIM8_CH2     D(3, 8)
 #define DEF_TIM_AF__PI7__TCH_TIM8_CH3     D(3, 8)
 
+//PORTJ - D(AF, TIMx)
+#define DEF_TIM_AF__PJ6__TCH_TIM8_CH2      D(3, 8)
+
+#define DEF_TIM_AF__PJ8__TCH_TIM8_CH1      D(3, 8)
+#define DEF_TIM_AF__PJ9__TCH_TIM1_CH3      D(1, 1)
+#define DEF_TIM_AF__PJ10__TCH_TIM8_CH2     D(3, 8)
+#define DEF_TIM_AF__PJ11__TCH_TIM1_CH2     D(1, 1)
+
 #elif defined(STM32G4)
 
 // Missing from FW1.0.0 library?
