@@ -89,7 +89,7 @@
 #define USE_ADC_INTERNAL
 
 #define ADC1_INSTANCE           ADC1
-#define VBAT_ADC_PIN            PA0_C
+#define VBAT_ADC_PIN            NONE
 #define DEFAULT_VOLTAGE_METER_SOURCE VOLTAGE_METER_ADC
 
 #define DEFAULT_RX_FEATURE      FEATURE_RX_SERIAL
