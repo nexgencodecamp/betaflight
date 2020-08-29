@@ -22,11 +22,17 @@
 
 #define TARGET_BOARD_IDENTIFIER "POH7"
 #define USBD_PRODUCT_STRING     "PORTENTA_H7"
-#define TARGET_MANUFACTURER_IDENTIFIER "CUST"
 
 #define LED0_PIN                PK7
 #define LED1_PIN                PK5
 #define LED2_PIN                PK6
+
+// Force two buttons to look at the single button so config reset on button works
+#define USE_BUTTONS
+#define	BUTTON_A_PIN            PA4
+#define BUTTON_A_PIN_INVERTED // Active high
+#define	BUTTON_B_PIN            PA4
+#define BUTTON_B_PIN_INVERTED // Active high
 
 #define USE_BEEPER
 #define BEEPER_PIN              PH15
