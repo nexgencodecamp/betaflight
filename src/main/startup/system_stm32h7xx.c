@@ -229,6 +229,17 @@ pllConfig_t pll1ConfigRevV = {
     .vos = PWR_REGULATOR_VOLTAGE_SCALE0
 };
 
+// 27MHz for Arduino Portenta H7
+pllConfig_t pll1ConfigPortentaH7 = {
+    .clockMhz = 27,
+    .m = 4,
+    .n = 27,
+    .p = 2,
+    .q = 8,
+    .r = 5,
+    .vos = PWR_REGULATOR_VOLTAGE_SCALE0
+};
+
 // HSE clock configuration, originally taken from
 // STM32Cube_FW_H7_V1.3.0/Projects/STM32H743ZI-Nucleo/Examples/RCC/RCC_ClockConfig/Src/main.c
 
@@ -251,7 +262,12 @@ static void SystemClockHSE_Config(void)
     }
 #endif
 
-    pllConfig_t *pll1Config = (HAL_GetREVID() == REV_ID_V) ? &pll1ConfigRevV : &pll1ConfigRevY;
+    pllConfig_t *pll1Config;
+#if defined(STM32H747xx)
+    pll1Config = &pll1ConfigPortentaH7; // H747 is similar to H743 Rev.V but with a different HSE
+#else
+    pll1Config = (HAL_GetREVID() == REV_ID_V) ? &pll1ConfigRevV : &pll1ConfigRevY;
+#endif
 
     // Configure voltage scale.
     // It has been pre-configured at PWR_REGULATOR_VOLTAGE_SCALE1,
@@ -370,10 +386,15 @@ void SystemClock_Config(void)
 {
     // Configure power supply
 
-    HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
+    /**Supply configuration update enable */
 
-    // Pre-configure voltage scale to PWR_REGULATOR_VOLTAGE_SCALE1.
-    // SystemClockHSE_Config may configure PWR_REGULATOR_VOLTAGE_SCALE0.
+#if defined(STM32H747xx)
+    HAL_PWREx_ConfigSupply(PWR_DIRECT_SMPS_SUPPLY);
+#else
+    MODIFY_REG(PWR->CR3, PWR_CR3_SCUEN, 0);
+#endif
+
+    /**Configure the main internal regulator output voltage */
 
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
