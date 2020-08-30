@@ -267,7 +267,7 @@ MCU_COMMON_SRC = \
             drivers/audio_stm32h7xx.c \
             drivers/memprot_hal.c \
             drivers/memprot_stm32h7xx.c \
-            #drivers/accgyro/accgyro_mpu.c \
+            drivers/accgyro/accgyro_mpu.c \
 
 MCU_EXCLUDES = \
             drivers/bus_i2c.c \
