@@ -75,7 +75,7 @@
 #define USE_GYRO
 #define USE_GYRO_SPI_MPU6500
 
-#define GYRO_1_CS_PIN           SPI2_NSS_PIN
+#define GYRO_1_CS_PIN           PI0
 #define GYRO_1_SPI_INSTANCE     SPI2
 
 #define USE_ACC
@@ -84,6 +84,7 @@
 #define GYRO_1_ALIGN            CW0_DEG
 
 #define GYRO_CONFIG_USE_GYRO_DEFAULT GYRO_CONFIG_USE_GYRO_1 
+#define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
 
 #define USE_TIMER
 #define USE_MOTOR
@@ -101,6 +102,17 @@
 #define SERIALRX_UART           SERIAL_PORT_USART1
 
 #define USE_DMA
+
+// Thanks to DMAMUX, H7 does not have limitations on DMA stream assignments to devices (except for collisions among them).
+//#define UART1_TX_DMA_OPT        0
+//#define UART2_TX_DMA_OPT        1
+//#define UART3_TX_DMA_OPT        2
+//#define UART4_TX_DMA_OPT        3
+//#define UART5_TX_DMA_OPT        4
+//#define UART6_TX_DMA_OPT        5
+//#define UART7_TX_DMA_OPT        6
+//#define UART8_TX_DMA_OPT        7
+#define ADC1_DMA_OPT 8
 
 #define TARGET_IO_PORTA 0xffff
 #define TARGET_IO_PORTB 0xffff
