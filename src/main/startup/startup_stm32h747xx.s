@@ -1,32 +1,31 @@
 /**
-******************** (C) COPYRIGHT 2019 STMicroelectronics ********************
-* File Name          : 
-* Author             : MCD Application Team
-* Description        : STM32H7xx devices vector table for MDK-ARM toolchain. 
-*                      This module performs:
-*                      - Set the initial SP
-*                      - Set the initial PC == Reset_Handler
-*                      - Set the vector table entries with the exceptions ISR address
-*                      - Branches to __main in the C library (which eventually
-*                        calls main()).
-*                      After Reset the Cortex-M processor is in Thread mode,
-*                      priority is Privileged, and the Stack is set to Main.
-* <<< Use Configuration Wizard in Context Menu >>>   
-******************************************************************************
-* @attention
-*
-* Copyright (c) 2019 STMicroelectronics.
-* All rights reserved.
-*
-* This software component is licensed by ST under BSD 3-Clause license,
-* the "License"; You may not use this file except in compliance with the
-* License. You may obtain a copy of the License at:
-*                        opensource.org/licenses/BSD-3-Clause
-*
-******************************************************************************
-*/
-
-.syntax unified
+  ******************************************************************************
+  * @file      startup_stm32h745xx.s
+  * @author    MCD Application Team
+  * @brief     STM32H745xx Devices vector table for GCC based toolchain. 
+  *            This module performs:
+  *                - Set the initial SP
+  *                - Set the initial PC == Reset_Handler,
+  *                - Set the vector table entries with the exceptions ISR address
+  *                - Branches to main in the C library (which eventually
+  *                  calls main()).
+  *            After Reset the Cortex-M processor is in Thread mode,
+  *            priority is Privileged, and the Stack is set to Main.
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
+  * All rights reserved.</center></h2>
+  *
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
+  *
+  ******************************************************************************
+  */
+    
+  .syntax unified
   .cpu cortex-m7
   .fpu softvfp
   .thumb
@@ -34,10 +33,10 @@
 .global  g_pfnVectors
 .global  Default_Handler
 
-/* start address for the initialization values of the .data section. 
+/* start address for the initialization values of the .data section.
 defined in linker script */
 .word  _sidata
-/* start address for the .data section. defined in linker script */  
+/* start address for the .data section. defined in linker script */
 .word  _sdata
 /* end address for the .data section. defined in linker script */
 .word  _edata
@@ -51,7 +50,7 @@ defined in linker script */
  * @brief  This is the code that gets called when the processor first
  *          starts execution following a reset event. Only the absolutely
  *          necessary set is performed, after which the application
- *          supplied main() routine is called. 
+ *          supplied main() routine is called.
  * @param  None
  * @retval : None
 */
@@ -59,10 +58,12 @@ defined in linker script */
     .section  .text.Reset_Handler
   .weak  Reset_Handler
   .type  Reset_Handler, %function
-Reset_Handler:  
+Reset_Handler:
   ldr   sp, =_estack      /* set stack pointer */
 
-/* Copy the data segment initializers from flash to SRAM */  
+  bl persistentObjectInit
+
+/* Copy the data segment initializers from flash to SRAM */
   movs  r1, #0
   b  LoopCopyDataInit
 
@@ -71,7 +72,7 @@ CopyDataInit:
   ldr  r3, [r3, r1]
   str  r3, [r0, r1]
   adds  r1, r1, #4
-    
+
 LoopCopyDataInit:
   ldr  r0, =_sdata
   ldr  r3, =_edata
@@ -80,23 +81,49 @@ LoopCopyDataInit:
   bcc  CopyDataInit
   ldr  r2, =_sbss
   b  LoopFillZerobss
-/* Zero fill the bss segment. */  
+/* Zero fill the bss segment. */
 FillZerobss:
   movs  r3, #0
   str  r3, [r2], #4
-    
+
 LoopFillZerobss:
   ldr  r3, = _ebss
   cmp  r2, r3
   bcc  FillZerobss
 
+/*-----*/
+  ldr  r2, =_ssram2
+  b  LoopFillZerosram2
+/* Zero fill the sram2 segment. */
+FillZerosram2:
+  movs  r3, #0
+  str  r3, [r2], #4
+
+LoopFillZerosram2:
+  ldr  r3, = _esram2
+  cmp  r2, r3
+  bcc  FillZerosram2
+
+  ldr  r2, =_sfastram_bss
+  b  LoopFillZerofastram_bss
+/* Zero fill the fastram_bss segment. */
+FillZerofastram_bss:
+  movs  r3, #0
+  str  r3, [r2], #4
+
+LoopFillZerofastram_bss:
+  ldr  r3, = _efastram_bss
+  cmp  r2, r3
+  bcc  FillZerofastram_bss
+/*-----*/
+
 /* Call the clock system intitialization function.*/
-  bl  SystemInit   
+  bl  SystemInit
 /* Call static constructors */
-    bl __libc_init_array
+/*  bl __libc_init_array */
 /* Call the application's entry point.*/
   bl  main
-  bx  lr    
+  bx  lr
 .size  Reset_Handler, .-Reset_Handler
 
 /**
@@ -266,7 +293,7 @@ g_pfnVectors:
   .word     MDIOS_IRQHandler                  /* MDIOS global Interrupt      */    
   .word     JPEG_IRQHandler                   /* JPEG global Interrupt       */    
   .word     MDMA_IRQHandler                   /* MDMA global Interrupt       */    
-  .word     DSI_IRQHandler                    /* DSI global Interrupt        */    
+  .word     0                                 /* Reserved                   */    
   .word     SDMMC2_IRQHandler                 /* SDMMC2 global Interrupt     */    
   .word     HSEM1_IRQHandler                  /* HSEM1 global Interrupt      */    
   .word     HSEM2_IRQHandler                  /* HSEM1 global Interrupt      */    
@@ -287,8 +314,8 @@ g_pfnVectors:
   .word     LPTIM5_IRQHandler                 /* LP TIM5 global interrupt   */     
   .word     LPUART1_IRQHandler                /* LP UART1 interrupt         */     
   .word     WWDG_RST_IRQHandler               /* Window Watchdog reset interrupt (exti_d2_wwdg_it, exti_d1_wwdg_it) */     
-  .word     CRS_IRQHandler                    /* Clock Recovery Global Interrupt */    
-  .word     ECC_IRQHandler                    /* ECC diagnostic Global Interrupt */  
+  .word     CRS_IRQHandler                    /* Clock Recovery Global Interrupt */ 
+  .word     ECC_IRQHandler                    /* ECC diagnostic Global Interrupt */ 
   .word     SAI4_IRQHandler                   /* SAI4 global interrupt      */      
   .word     0                                 /* Reserved                   */      
   .word     HOLD_CORE_IRQHandler              /* Hold core interrupt        */      
@@ -685,9 +712,6 @@ g_pfnVectors:
    .weak      MDMA_IRQHandler            
    .thumb_set MDMA_IRQHandler,Default_Handler 
 
-   .weak      DSI_IRQHandler            
-   .thumb_set DSI_IRQHandler,Default_Handler
-
    .weak      SDMMC2_IRQHandler            
    .thumb_set SDMMC2_IRQHandler,Default_Handler 
    
@@ -763,4 +787,4 @@ g_pfnVectors:
    .weak      WAKEUP_PIN_IRQHandler            
    .thumb_set WAKEUP_PIN_IRQHandler,Default_Handler 
    
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/        
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/              
