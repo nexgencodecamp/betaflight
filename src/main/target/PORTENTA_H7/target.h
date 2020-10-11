@@ -23,8 +23,8 @@
 #define TARGET_BOARD_IDENTIFIER "POH7"
 #define USBD_PRODUCT_STRING     "PORTENTA_H7"
 
-#define LED0_PIN                PK7
-#define LED1_PIN                PK5
+#define LED0_PIN                PC2
+#define LED1_PIN                PC3
 #define LED2_PIN                PK6
 
 // Force two buttons to look at the single button so config reset on button works
